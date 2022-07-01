@@ -24,7 +24,7 @@ module.exports = smp.wrap(
             }
         }
     },
-    // 缓存
+    // 内存缓存
     cache: {
         type: 'memory'
     }

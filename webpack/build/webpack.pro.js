@@ -22,7 +22,7 @@ module.exports = merge(baseConfig, {
         }),
         new OptimizeCssPlugin(),
     ],
-    // 缓存
+    // 文件缓存
     cache: {
         type: 'filesystem',
         buildDependencies: {
