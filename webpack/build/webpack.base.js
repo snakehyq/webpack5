@@ -6,21 +6,19 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
+const CssPathTransfor = require("../plugins/CssPathTransfor")
+const DecideHTmlWebpack = require("../plugins/DecideHTmlWebpack")
 module.exports = {
   module: {
     rules: [
-        // 自定义个将markdown文件转换为html的loader
-        {
-            test: '/\.md$/',
-            use: [
-                {
-                    loader: resolve('loaders') + '/my-loader',
-                    options: {
-                        headerIds: false
-                    }
-                }
-            ]
-        },
+      // 自定义处理.txt文件的loader
+      {
+        test: /\.txt$/,
+        use: [
+          'uppercase-loader',
+          'reverse-loader'
+        ]
+      },
       {
         test: /\.(le|c)ss$/,
         // 优化，告诉webpack哪些是需要优化的include
@@ -46,7 +44,16 @@ module.exports = {
       },
       {
         test: "/.(js?x)$/",
-        use: "babel-loader",
+        use: [
+          // 自定义loader env-loader
+          {
+            loader: 'env-loader',
+            options: {
+              env: process.env.NODE_ENV
+            }
+          },
+          "babel-loader",
+        ],
         // 优化，告诉webpack哪些是需要优化的include
         // 哪些是不需要优化的exclude
         include: resolve(rootDir, "src"),
@@ -88,6 +95,10 @@ module.exports = {
   },
   // 插件
   plugins: [
+    // 自定义插件DecideHTmlWebpack
+    new DecideHTmlWebpack(),
+    // 自定义插件CssPathTransfor
+    new CssPathTransfor(),
     // 进度条
     new ProgressBarPlugin({
       format: `  :msg [:bar] ${chalk.green.bold(":percent")} (:elapsed s)`,
@@ -107,4 +118,11 @@ module.exports = {
   optimization: {
     nodeEnv: false,
   },
+  // 配置查找loader的目录，如果我们自定义loader，需要用到resolveLoader，默认情况下，找'node_modules'文件
+  resolveLoader: {
+    modules: [
+      'node_modules',
+      resolve(__dirname, '../loaders'), // 自定义loader的目录
+    ]
+  }
 };
