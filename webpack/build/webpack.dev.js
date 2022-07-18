@@ -1,13 +1,18 @@
 const { merge } = require('webpack-merge')
 const baseConfig = require('./webpack.base')
+const webpack = require('webpack')
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
 const WatchResources = require('../plugins/WatchResources')
+
 module.exports = smp.wrap(
   merge(baseConfig, {
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     plugins: [
+        //首先配置 devServer 的 hot 为 true
+        //并且在 plugins 中增加 new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(), //热更新插件
         // 自定义插件 watch-resources
         new WatchResources(),
     ],

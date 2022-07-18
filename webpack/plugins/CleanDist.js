@@ -13,8 +13,6 @@
  *   里面提供了许多的方法来使我们更方便的操作数组、对象、字符串等。
  *   而这里的union方法就是能把多个数组合并成一个无重复项的数组，
  *  */ 
-
-
 const recursiveReadSync = require('recursive-readdir-sync')
 const minimatch = require("minimatch");
 const union = require("lodash.union");
@@ -30,12 +28,9 @@ class CleanDist {
         compiler.hooks.done.tapAsync(pluginName, (stats) => {
             const assetsName = stats.toJson().assets.map(item => item.name)
             // 编译后的最新的资源文件,与this.options.exclude进行合并并且去重
-            console.log(' this.options.exclude',  this.options.exclude)
             const newAssets = union(this.options.exclude, assetsName)
-            console.log('newAssets', newAssets);
            // 获取未匹配文件
            const umatchFiles = this.getUnmatchFiles(outputPath, newAssets)
-           console.log('umatchFiles', umatchFiles);
            // 删除未匹配的文件
            umatchFiles.forEach(fs.unlinkSync)
 

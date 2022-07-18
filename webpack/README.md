@@ -80,8 +80,48 @@ optimization: {
     }
 ```
 这个在 `mode: production` 时是默认开启的，但是默认情况下只会对按需加载的代码进行分割。如果我们要对一开始就加载的代码也做分割处理，就要进行如上配置。
-从官网上找了一张图
+从官网上找了一张图.
 
+```js
+module.exports = {
+    optimization: {
+        splitChunks: {//分割代码块
+            cacheGroups: {
+                vendor: {
+                    //第三方依赖
+                    priority: 1, //设置优先级，首先抽离第三方模块
+                    name: 'vendor',
+                    test: /node_modules/,
+                    chunks: 'initial',
+                    minSize: 0,
+                    minChunks: 1 //最少引入了1次
+                },
+                //缓存组
+                common: {
+                    //公共模块
+                    chunks: 'initial',
+                    name: 'common',
+                    minSize: 100, //大小超过100个字节
+                    minChunks: 3 //最少引入了3次
+                }
+            }
+        }
+    }
+}
+```
+runtimeChunk 的作用是将包含 chunk 映射关系的列表从 main.js 中抽离出来，在配置了 splitChunk 时，记得配置 runtimeChunk.
+
+```js
+module.exports = {
+    //...
+    optimization: {
+        runtimeChunk: {
+            name: 'manifest'
+        }
+    }
+}
+```
+最终构建出来的文件中会生成一个 manifest.js。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/d515ff18fd5e47c1b7e65cd6dd02e300.png)
 
 大家的项目可能都有所不同，相对应的最佳的配置可能也有所不同，所以这里就补贴具体的配置了，大家有需要的可以看官网的文档对自己的项目进行配置 官网 [Webpack从 0 到 1 学会 code splitting](https://juejin.cn/post/6979769284612325406)

@@ -43,7 +43,7 @@ module.exports = {
         ],
       },
       {
-        test: "/.(js?x)$/",
+        test: "/.(jsx?)$/",
         use: [
           // 自定义loader env-loader
           {
